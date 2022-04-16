@@ -7,6 +7,6 @@ RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
 RUN python3 -m pip install kubernetes
 RUN python3 -m pip install -U pytest
-COPY wrcp-k8s/ wrcp-k8s/
+COPY wrcp/ wrcp/
 COPY kubernetestestcases.py k8s-test.py
 
