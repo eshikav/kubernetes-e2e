@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wrcp-k8s-test-suite
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wrcp-test
+  namespace: wrcp-k8s-test-suite
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: wrcp-k8s-test-suite
+  name: k8s-readonly
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: k8s-readonly-binding
+  namespace: wrcp-k8s-test-suite
+kind: ClusterRoleBinding
+subjects:
+  - kind: ServiceAccount
+    name: wrcp-test
+    apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: k8s-readonly
+  apiGroup: ""
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5sb2NhbDo5MDAxIjp7InVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IldpbmQyMDIyQCIsImF1dGgiOiJZV1J0YVc0NlYybHVaREl3TWpKQSJ9fX0=
+kind: Secret
+metadata:
+  name: regcred-local
+  namespace: wrcp-k8s-test-suite
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wrcp-k8s-test-suite
+  namespace: wrcp-k8s-test-suite
+  labels:
+    name: testsuite
+spec:
+  nodeName: controller-1
+  serviceAccountName: wrcp-test
+  imagePullSecrets:
+    - name:
+  containers:
+  - name: wrcp
+    image: registry.local:9001/k8s/wrcp:01
+    env:
+      - name: KUBECONFIG
+        value: "/etc/kubernetes/admin.conf"
+      - name: 
+    command: ["/bin/bash"]
+    args: ["-c", "while true;do sleep 10;done"]
+    volumeMounts:
+      - name: platform-directory
+        mountPath: /etc/kubernetes
+        readOnly: true
+  volumes:
+     - name: platform-directory
+       hostPath:
+        type: Directory
+        path: /etc/kubernetes
