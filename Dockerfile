@@ -8,7 +8,6 @@ RUN python3 -m pip install -U paramiko
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
-
-COPY wrcp-k8s/ wrcp-k8s/
-COPY kubernetestestcases.py kubernetestestcases.py
+COPY wrcp/ wrcp/
+COPY kubernetestestcases.py k8s-test.py
 
