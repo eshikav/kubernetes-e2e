@@ -12,7 +12,7 @@ class sshClient():
         self.client = client.SSHClient()
         self.autoadd = client.AutoAddPolicy()
         self.client.set_missing_host_key_policy(self.autoadd)
-        self.client.connect(hostname='128.224.211.32',username=username,password=password)
+        self.client.connect(hostname='<hostname>',username=username,password=password)
         self.hosts = None
         self.controllers = None
         self.storage = None
